@@ -1,15 +1,21 @@
-﻿<!DOCTYPE html>
+﻿
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Rozetka</title>
+    @* <title>@ViewData["Title"] - Rozetka</title> *@
+    <title>Rozetka - @ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Rozetka.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="icon" href="~/logo/hello_smile_icon.png" />
 </head>
 <body>
-    <header>
+   @*  <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Rozetka</a>
@@ -29,7 +35,283 @@
                 </div>
             </div>
         </nav>
+    </header> *@
+
+    <header>         
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom fixed-top">
+           
+            <div class="container-xxl bd-gutter flex-wrap flex-lg-nowrap">               
+                <a class="nav-link text-white btn-lg"
+                   data-bs-toggle="offcanvas" 
+                    href="#offcanvasExample" 
+                    role="button" 
+                    aria-controls="offcanvasExample">
+                    <i class="bi bi-list" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Бокова панель"></i>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" style="color: white"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="bi bi-list"></span>
+                </button>               
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <a class="navbar-brand fs-2 ms-5" asp-area="" asp-controller="Home" asp-action="Index">
+                        <img src="\logo\hello_smile_icon.png" alt="ROZETKA" width="40" height="40">ROZETKA
+                    </a>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#catalogModal">
+                        <i class="bi bi-boxes"></i> 
+                        Каталог
+                    </button>                                        
+                </div>   
+                <form class="d-flex mx-3 p-2 flex-fill" role="search" asp-controller="Home" asp-action="Searching">
+                    <input class="form-control" type="search" placeholder="Я шукаю..." aria-label="Search" name="inputSearching">
+                    <button class="btn btn-success" type="submit">Знайти</button>
+                </form>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        @if (Context.User.Identity?.IsAuthenticated ?? false)
+                        {
+                            if (@Context.User.IsInRole("admin"))
+                            @* if (@Context.User.Claims.First(c => c.Type == ClaimTypes.Role).Value == "admin")  *@
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white btn-lg"
+                                       asp-action="NewProduct" asp-controller="Product"
+                                       data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Додати товар">
+                                        <i class="bi bi-plus-circle"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white btn-lg"
+                                       asp-action="ProductDB" asp-controller="Product"
+                                       data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Таблиця товарів">
+                                        <i class="bi bi-table"></i>
+                                    </a>
+                                </li>
+                            }
+                            <li class="nav-item">
+                                <a class="nav-link text-white btn-lg"
+                                   asp-area="" asp-controller="Home" asp-action="Purchase"
+                                   data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Покупки">
+                                    <i class="bi bi-card-list"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white btn-lg"
+                                   asp-area="" asp-controller="Home" asp-action="Shares"
+                                   data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Акції">
+                                    <i class="bi bi-bell"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">                                
+                                <a type="button" class="nav-link text-white btn-lg"
+                                   asp-area="" asp-controller="Home" asp-action="Compare"
+                                   data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Список порівнянь">
+                                    <img src="~/icons/balance_icon.png" alt="Balance Icon" class="icon-img-white">
+
+                                   @*  @if (compare != null)
+                                    {
+                                        if (compare.Count > 0)
+                                        {
+                                            <span class="position-absolute top-1 translate-middle badge rounded-pill bg-danger">
+                                                @compare.Count
+                                            </span>
+                                        }
+                                    } *@
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white btn-lg"
+                                   asp-area="" asp-controller="Home" asp-action="WishList"
+                                   data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Список бажань">
+                                    <i class="bi bi-heart"></i>
+                                   @*  @if (wishlist != null)
+                                    {
+                                        if (wishlist.Length > 0)
+                                        {
+                                            <span class="position-absolute top-1 translate-middle badge rounded-pill bg-danger">
+                                                @wishlist.Length
+                                            </span>
+                                        }                                       
+                                    } *@
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a type="button" href="" class="nav-link text-white btn-lg" id="auth-signout-button-nav"
+                                   data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Вихід">
+                                       <i class="bi bi-box-arrow-right"></i>
+                                </a>
+                            </li>
+                           
+                        }
+                        else
+                        {
+                            <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Вхід">
+                                <!-- Button trigger modal -->
+                                <a type="button" href="" class="nav-link text-white btn-lg"
+                                   data-bs-toggle="modal"
+                                   data-bs-target="#authModal">
+                                    <i class="bi bi-person"></i>                                    
+                                </a>
+                            </li>
+                           @*  <li class="nav-item">
+                                <a type="button" class="nav-link text-white btn-lg"
+                                   asp-area="" asp-controller="Home" asp-action="Compare"
+                                   data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Порівняння">
+                                    <img src="~/icons/balance_icon.png" alt="Balance Icon" class="icon-img-white">
+                                    
+                                    @if (compare != null)
+                                    {
+                                        if (compare.Count > 0)
+                                        {
+                                            <span class="position-absolute top-1 translate-middle badge rounded-pill bg-danger">
+                                                @compare.Count
+                                            </span>
+                                        }
+                                    }
+                                </a>
+                            </li> *@
+                        }
+                        
+                    </ul>                    
+                </div>
+                
+                <!-- Button trigger modal -->
+                <a class="nav-link text-white position-relative btn-lg"
+                   asp-area="" asp-controller="Home" asp-action="Cart"
+                   data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Кошик">
+                    <i class="bi bi-cart2"></i>     
+                    @* @if (shoppingCart != null)
+                    {
+                        if (@shoppingCart.Length > 0)
+                        {
+                            <span class="position-absolute top-1 translate-middle badge rounded-pill bg-danger">
+                                @shoppingCart.Length
+                            </span>
+                        }
+                        
+                    } *@
+                </a>
+               
+            </div>
+        </nav>      
     </header>
+
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+        <div class="offcanvas-header" style="background-color:black">
+            <a class="navbar-brand fs-2 ms-5" asp-area="" asp-controller="Home" asp-action="Index">
+                <img src="\logo\hello_smile_icon.png" alt="ROZETKA" width="40" height="40">ROZETKA
+            </a>
+            <button type="button" class="btn-close btn-light" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+
+        </div>
+        <div class="offcanvas-body" style="background-color:white">
+
+            @if (Context.User.Identity?.IsAuthenticated ?? false)
+            {
+                <div class="catalog text-center text-capitalize">
+                    <a class="link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" asp-controller="User" asp-action="PersonalData">
+                        <h5 class="offcanvas-title" id="offcanvasExampleLabel">@Context.User.Identity?.Name</h5>
+                        @* <h4 class="offcanvas-title">@Context.User.Claims.First(c => c.Type == ClaimTypes.Email).Value</h4> *@
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col">
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#authModal">
+                            Вхід
+                        </button>
+                    </div>
+                    <div class="col">
+                        <a asp-controller="User" asp-action="SignUp"
+                           class="btn btn-info btn-lg">Реєстрація</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <dil class="col">
+                        <img src="~/icons/person_icon.png" alt="Person Icon">
+
+                    </dil>
+                    <dil class="col-8">
+                        <label>Авторизуйтесь для отримання розширених можливостей</label>
+                    </dil>
+                </div>
+            }
+
+            <div class="d-grid gap-2">
+                <hr>
+                <button type="button" class="btn btn-lg text-success text-start" data-bs-toggle="modal" data-bs-target="#catalogModal">
+                    <i class="bi bi-boxes"></i>
+                    Каталог товарів
+                </button>
+                <hr>
+                <button type="button" class="btn btn-lg text-success text-start"
+                        data-bs-toggle="modal"
+                        data-bs-target="#infoModal">
+                    <i class="bi bi-question-circle"></i>
+                    Довідковий центр
+                </button>
+                <hr>
+                <a class="btn btn-lg text-success text-start" asp-controller="Home" asp-action="Cart">
+                    <i class="bi bi-cart2"></i>
+                    Кошик                    
+                    @* @if (shoppingCart != null)
+                    {
+                        if (@shoppingCart.Length > 0)
+                        {
+                            <span class="badge text-bg-secondary bg-success">   @shoppingCart.Length</span>
+                        }
+                    } *@
+                </a>
+                @if (Context.User.Identity?.IsAuthenticated ?? false)
+                {
+                    <a class="btn btn-lg text-success text-start" asp-controller="Home" asp-action="Purchase">
+                        <i class="bi bi-card-list"></i>
+                        Мої замовлення
+                    </a>
+                    <a class="btn btn-lg text-success text-start" asp-controller="Home" asp-action="Shares">
+                        <i class="bi bi-bell"></i>
+                        Персональні пропозиції
+                    </a>
+
+                    <a class="btn btn-lg text-success text-start" asp-controller="Home" asp-action="WishList">
+                        <i class="bi bi-heart"></i>
+                        Список бажань
+                        @* @if (wishlist != null)
+                        {
+                            if (@wishlist.Length > 0)
+                            {
+                                <span class="badge text-bg-secondary bg-success">  @wishlist.Length</span>
+                            }
+                        } *@
+                        
+                    </a>
+
+                    <a class="btn btn-lg text-success text-start" asp-controller="Home" asp-action="Compare">
+                        <img src="~/icons/balance_icon2.png" alt="Balance Icon" class="icon-img-green">
+                        Порівняння
+                        @* @if (compare != null)
+                        {
+                            if (compare.Count > 0)
+                            {
+                                <span class="badge text-bg-secondary bg-success">  @compare.Count</span>
+                            }
+                        } *@
+
+                    </a>
+                    <hr>
+                    <button type="button" class="btn btn-lg text-danger text-start" id="auth-signout-button-offcanvas">
+                        <i class="bi bi-box-arrow-right"></i>
+                        Вихід
+                    </button>
+                }
+            </div>            
+        </div>
+    </div>
+
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -47,3 +329,31 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+<!-- Modal -->
+<div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="authModalLabel">Авторизація</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="auth-email" class="form-label">Email:</label>
+                    <input type="email" class="form-control" id="auth-email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="auth-password" class="form-label">Пароль:</label>
+                    <input type="password" class="form-control" id="auth-password" name="password" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div id="auth-message" class="alert alert-danger visually-hidden" role="alert"></div>
+                <a asp-controller="User" asp-action="SignUp"
+                   class="btn btn-info">Реєстрація</a>
+                <button type="button" class="btn btn-primary" id="auth-button">Увійти</button>
+            </div>
+        </div>
+    </div>
+</div>

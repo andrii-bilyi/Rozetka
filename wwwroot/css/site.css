@@ -20,3 +20,51 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* список */
+.catalog a {
+    color: blue; /* Цвет текста по умолчанию - синий */
+    text-decoration: none; /* Убираем подчеркивание */
+    font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif; /* Замените "Arial, sans-serif" на ваш предпочитаемый шрифт */
+    font-size: 20px; /* Увеличиваем размер текста */
+}
+
+    .catalog a:hover {
+        color: red; /* Цвет текста при наведении - красный */
+        text-decoration: underline; /* Добавляем подчеркивание при наведении */
+    }
+
+.catalog i.bi {
+    color: gray; /* Цвет иконки - серый */
+    font-size: 24px; /* Увеличиваем размер текста */
+}
+
+#heart-button {
+    max-height: 40px;
+    max-width: 40px;
+}
+
+#heart-icon {
+    color: gold; /* Новый цвет иконки */
+}
+/*.btn-link:focus,
+.btn-link:active {
+    outline: none;
+}*/
+.icon-img {
+    width: 32px; 
+    height: 32px; 
+}
+
+.icon-img-white {
+    width: 32px; 
+    height: 32px; 
+    filter: invert(100%) brightness(100%) grayscale(0%);
+}
+
+.icon-img-green {
+    width: 32px; 
+    height: 32px; 
+    /*filter: brightness(0) invert(1) sepia(100%) saturate(7500%) hue-rotate(110deg);*/
+}
+

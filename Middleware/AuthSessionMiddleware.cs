@@ -1,0 +1,46 @@
+﻿using Rozetka.Services;
+using System.Security.Claims;
+
+namespace Rozetka.Middleware
+{
+    public class AuthSessionMiddleware
+    {
+        private readonly RequestDelegate _next;
+        public AuthSessionMiddleware(RequestDelegate next)
+        {
+            _next = next;
+        }
+
+        public async Task Invoke(HttpContext context, IUserService _userService)
+        {
+            //if (context.Session.Keys.Contains("AuthUserId"))
+            //{
+            //    var user = _userService.Users.
+
+            //    var userId = context.Session.GetString("AuthUserId");
+            //    var user = await userService.GetUserByIdAsync(userId);
+
+            //    if (user != null)
+            //    {
+            //        var claims = new Claim[]
+            //        {
+            //            new Claim(ClaimTypes.Sid, user.Id),
+            //            new Claim(ClaimTypes.Name, user.FirstName),
+            //            new Claim(ClaimTypes.Email, user.UserEmail),
+            //            new Claim(ClaimTypes.Role, user.Role),
+            //            new Claim(ClaimTypes.GivenName, user.LastName),
+            //            //new(ClaimTypes.SerialNumber, user.UserPhone)
+            //        };
+            //        context.User = new ClaimsPrincipal(new ClaimsIdentity(claims, nameof(AuthSessionMiddleware)));
+            //        //запитати кошик та покласти у context
+            //        context.Items["ShoppingCart"] = user.Cart;
+            //        context.Items["WishList"] = user.Wish;
+            //        context.Items["Purchase"] = user.Purchases;
+
+            //    }
+            //}
+
+            await _next(context);
+        }
+    }
+}
