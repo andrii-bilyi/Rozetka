@@ -5,6 +5,7 @@ using Rozetka.Data.Entity;
 using Rozetka.Models.Signup;
 using Rozetka.Services;
 using Rozetka.Services.Hash;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace Rozetka.Controllers
@@ -26,6 +27,19 @@ namespace Rozetka.Controllers
         {           
             _hashService = hashService;
             _userService = userService;
+        }
+
+        public async Task<ActionResult> PersonalDataAsync()
+        {
+            var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid)?.Value;
+            Guid.TryParse(userId, out Guid userGuid);
+            // Получаем пользователя
+            User user = await _userService.GetUserByIdAsync(userGuid);
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home"); // Перенаправление на домашнюю страницу
+            }
+            return View(user);
         }
 
         public ViewResult SignUp()
@@ -139,10 +153,11 @@ namespace Rozetka.Controllers
                 {
                     FirstName = formModel.FirstName,
                     LastName = formModel.LastName,
-                    Phone = formModel.Phone,
+                    PhoneNumber = formModel.Phone,
                     Email = formModel.Email,
-                    PasswordSalt = salt,
-                    PasswordDk = dk,
+                    PasswordHash = formModel.Password,
+                    //PasswordSalt = salt,
+                    //PasswordDk = dk,
                     RegisterDt = DateTime.Now
                 };
                 await _userService.AddUserAsync(user);               

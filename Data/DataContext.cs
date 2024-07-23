@@ -10,7 +10,7 @@ namespace Rozetka.Data
         public DataContext(DbContextOptions options) : base(options) { }
 
         public DbSet<Category> Categories { get; set; }
-        public DbSet<Subcategory> Subcategories { get; set; }
+        public DbSet<Childcategory> Subcategories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<User> Users { get; set; }
@@ -22,7 +22,7 @@ namespace Rozetka.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasDefaultSchema("Rozetka");
+            modelBuilder.HasDefaultSchema("rozetka_db");
         }
     }
 }

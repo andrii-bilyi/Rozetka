@@ -3,9 +3,10 @@
     public class Category
     {
         public int Id { get; set; }
-        public required String Name { get; set; }
-        public ICollection<Subcategory>? Subcategory { get; set; }
-
-        //public required ICollection<Product> Products { get; set; }
+        public required string Name { get; set; }
+        public ICollection<Childcategory>? Childcategory { get; set; }
+        public int? ParentCategoryId { get; set; }
+        public Category? ParentCategory { get; set; }
+        public ICollection<Product>? Products { get; set; }
     }
 }

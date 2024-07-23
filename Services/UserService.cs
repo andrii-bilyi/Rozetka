@@ -18,7 +18,7 @@ namespace Rozetka.Services
             return await _context.Users.ToListAsync();
         }
 
-        public async Task<User> GetUserByIdAsync(string id)
+        public async Task<User> GetUserByIdAsync(Guid id)
         {
             return await _context.Users.FindAsync(id);
         }
@@ -42,7 +42,7 @@ namespace Rozetka.Services
             return user;
         }
 
-        public async Task<bool> DeleteUserAsync(string id)
+        public async Task<bool> DeleteUserAsync(Guid id)
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null)

@@ -29,7 +29,7 @@ namespace Rozetka.Controllers
         }
 
         // GET: Users/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(string? id)
         {
             if (id == null)
             {
@@ -61,7 +61,7 @@ namespace Rozetka.Controllers
         {
             if (ModelState.IsValid)
             {
-                user.Id = Guid.NewGuid();
+                //user.Id = Guid.NewGuid().ToString();
                 _context.Add(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -90,7 +90,7 @@ namespace Rozetka.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,FirstName,LastName,Phone,Email,PasswordSalt,PasswordDk,RegisterDt,DeleteDt")] User user)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,FirstName,LastName,Phone,Email,PasswordSalt,PasswordDk,RegisterDt,DeleteDt")] User user)
         {
             if (id != user.Id)
             {
@@ -121,7 +121,7 @@ namespace Rozetka.Controllers
         }
 
         // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(string? id)
         {
             if (id == null)
             {
@@ -153,7 +153,7 @@ namespace Rozetka.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UserExists(Guid id)
+        private bool UserExists(string id)
         {
             return _context.Users.Any(e => e.Id == id);
         }

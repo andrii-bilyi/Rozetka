@@ -1,8 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.Extensions.Options;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using MySqlConnector;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Rozetka.Data;
+using Rozetka.Middleware;
 using Rozetka.Services;
 using Rozetka.Services.Hash;
 
@@ -11,12 +14,20 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Add session services
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(30); // время ожидания
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+// Register DbContext and services
 //builder.Services.AddDbContext<DataContext>(options =>
 //    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
 //        new MySqlServerVersion(new Version(8, 0, 21)),
 //        mySqlOptions => mySqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null)));
-
 builder.Services.AddScoped<IUserService, UserService>();
+
 builder.Services.AddSingleton<IHashService, Md5HashService>();
 
 
@@ -43,12 +54,6 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 builder.Services.AddDistributedMemoryCache();
 
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(10);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-});
 
 var app = builder.Build();
 
@@ -68,6 +73,8 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.UseSession();
+
+app.UseMiddleware<AuthSessionMiddleware>();
 
 app.MapControllerRoute(
     name: "default",

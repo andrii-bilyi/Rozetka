@@ -28,8 +28,9 @@ namespace Rozetka.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(string id)
+        public async Task<ActionResult<User>> GetUser(Guid id)
         {
+           // Guid.TryParse(id, out Guid userGuid);
             var user = await _userService.GetUserByIdAsync(id);
 
             if (user == null)
@@ -51,8 +52,8 @@ namespace Rozetka.Controllers
             }
             else
             {
-                String dk = _hashService.HexString(user.PasswordSalt + password);
-                if (user.PasswordDk != dk)
+                //String dk = _hashService.HexString(user.PasswordSalt + password);
+                if (user.PasswordHash != password)
                 {
                     //HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
 
@@ -64,7 +65,8 @@ namespace Rozetka.Controllers
                 //    return StatusCode(StatusCodes.Status410Gone);
                 //}
             }
-
+            //зберігаємо у сесії факт успішної автентифікації
+            HttpContext.Session.SetString("AuthUserId", user.Id.ToString());
             return Ok(user); //200
         }
 
@@ -76,7 +78,7 @@ namespace Rozetka.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(Guid id, User user)
+        public async Task<IActionResult> PutUser(string id, User user)
         {
             if (id != user.Id)
             {
@@ -88,7 +90,7 @@ namespace Rozetka.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(string id)
+        public async Task<IActionResult> DeleteUser(Guid id)
         {
             var result = await _userService.DeleteUserAsync(id);
 
@@ -96,7 +98,7 @@ namespace Rozetka.Controllers
             {
                 return NotFound();
             }
-
+            HttpContext.Session.Remove("AuthUserId");
             return NoContent();
         }
     }
