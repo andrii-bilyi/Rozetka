@@ -37,20 +37,25 @@ String? connectionString =
     .GetConnectionString("DefaultConnection");
 MySqlConnection connection = new(connectionString);
 
+//builder.Services.AddDbContext<DataContext>(options =>
+//    options.UseMySql(
+//        connection,
+//        ServerVersion.AutoDetect(connection),
+//        serverOptions =>
+//            serverOptions
+//            .MigrationsHistoryTable(
+//                tableName: HistoryRepository.DefaultTableName,
+//                schema: "Rozetka")
+//            .SchemaBehavior(
+//                MySqlSchemaBehavior.Translate,
+//                (schema, table) => $"{schema}_{table}")
+//    )
+//);
+
+// Register DbContext and services
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseMySql(
-        connection,
-        ServerVersion.AutoDetect(connection),
-        serverOptions =>
-            serverOptions
-            .MigrationsHistoryTable(
-                tableName: HistoryRepository.DefaultTableName,
-                schema: "Rozetka")
-            .SchemaBehavior(
-                MySqlSchemaBehavior.Translate,
-                (schema, table) => $"{schema}_{table}")
-    )
-);
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 builder.Services.AddDistributedMemoryCache();
 
