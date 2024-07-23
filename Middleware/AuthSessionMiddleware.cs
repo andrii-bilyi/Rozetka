@@ -65,10 +65,8 @@ namespace Rozetka.Middleware
             if (context.Session.Keys.Contains("AuthUserId"))
             {
                 var userId = context.Session.GetString("AuthUserId");
-                if (Guid.TryParse(userId, out Guid userGuid))
-                {
-                    var user = await userService.GetUserByIdAsync(userGuid);
-
+                if (userId != null) {
+                    var user = await userService.GetUserByIdAsync(userId);
                     if (user != null)
                     {
                         var claims = new List<Claim>
@@ -84,7 +82,6 @@ namespace Rozetka.Middleware
                     }
                 }
             }
-
             await _next(context);
         }
     }

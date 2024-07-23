@@ -28,7 +28,7 @@ namespace Rozetka.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(Guid id)
+        public async Task<ActionResult<User>> GetUser(string id)
         {
            // Guid.TryParse(id, out Guid userGuid);
             var user = await _userService.GetUserByIdAsync(id);
@@ -90,7 +90,7 @@ namespace Rozetka.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(Guid id)
+        public async Task<IActionResult> DeleteUser(string id)
         {
             var result = await _userService.DeleteUserAsync(id);
 

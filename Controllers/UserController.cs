@@ -32,9 +32,13 @@ namespace Rozetka.Controllers
         public async Task<ActionResult> PersonalDataAsync()
         {
             var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid)?.Value;
-            Guid.TryParse(userId, out Guid userGuid);
+            //Guid.TryParse(userId, out Guid userGuid);
+            if (userId == null)
+            {
+                return RedirectToAction("Index", "Home"); // Перенаправление на домашнюю страницу
+            }
             // Получаем пользователя
-            User user = await _userService.GetUserByIdAsync(userGuid);
+            User user = await _userService.GetUserByIdAsync(userId);
             if (user == null)
             {
                 return RedirectToAction("Index", "Home"); // Перенаправление на домашнюю страницу
