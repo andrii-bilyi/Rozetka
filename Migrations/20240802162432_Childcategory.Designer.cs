@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Rozetka.Data;
 
@@ -11,9 +12,11 @@ using Rozetka.Data;
 namespace Rozetka.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240802162432_Childcategory")]
+    partial class Childcategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -247,7 +250,7 @@ namespace Rozetka.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Childcategories");
+                    b.ToTable("Subcategories");
                 });
 
             modelBuilder.Entity("Rozetka.Data.Entity.Product", b =>

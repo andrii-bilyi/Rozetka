@@ -1,0 +1,251 @@
+﻿@model IEnumerable<Rozetka.Data.Entity.Product>
+@{
+    string? category = Context.Session.GetString("Category");
+    string? childcategory = Context.Session.GetString("ChildCategory");
+}
+@{
+    ViewData["Title"] = childcategory;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href=".."><i class="bi bi-house"></i></a></li>
+        <li class="breadcrumb-item"><a href="/Categories/GetChildCategories?category=@category">@category</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@childcategory</li>
+    </ol>
+</nav>
+
+<h1 class="display-4">@childcategory</h1>
+
+
+<div class="row">
+    @* @* <div class="col-sm-3 text-start border-end border-2" style="min-width: 300px">
+        @if (Model.Products.Count > 0)
+        {
+            <div class="accordion" id="accordionPanelsStayOpenExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                            Тип товару
+                        </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+                        <div class="accordion-body">
+                            <form method="post" asp-action="FilterType">
+                                <ul class="list-group list-group-flush">
+                                    @foreach (var type in Model.Types)
+                                    {
+                                        <li class="list-group-item">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="@type.Name" id="flexCheckDefault_@type.Name" name="selectedTypes">
+                                                <label class="form-check-label" for="flexCheckDefault_@type.Name">
+                                                    @type.Name
+                                                </label>
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                                <button type="submit" class="btn btn-primary">Ok</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                            Бренд
+                        </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
+                        <div class="accordion-body">
+                            <form method="post" asp-action="FilterBrend">
+                                <ul class="list-group list-group-flush">
+                                    @foreach (var brand in Model.Brands)
+                                    {
+                                        <li class="list-group-item">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="@brand.Name" id="brandCheckbox_@brand.Name" name="selectedBrands">
+                                                <label class="form-check-label" for="brandCheckbox_@brand.Name">
+                                                    @brand.Name
+                                                </label>
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                                <button type="submit" class="btn btn-primary">Ok</button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+                            Ціна
+                        </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse show">
+                        <div class="accordion-body">
+                            <form method="post" class="row g-3" asp-action="FilterPrace">
+                                <!-- Добавляем скрытое поле для передачи параметра category -->
+                                
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control" placeholder="Від" aria-label="Від" id="startPrace" name="startPrace" value="@minPrice">
+
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control" placeholder="До" aria-label="До" id="endPrace" name="endPrace" value="@maxPrice">
+
+                                </div>
+                                <div class="col-2">
+                                    <button type="submit" class="btn btn-primary">Ok</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        }
+
+    </div> *@ 
+    <div class="col-sm-9">
+       @*  @if (Model.Products.Count < 1)
+        {
+            <div class="container d-flex align-items-center justify-content-center">
+                <h4><em>В зв'язку з тим, що сайт знаходиться в розробці, товари даної категорії ще відсутні! Але, якщо ви маєте права адміністратора, ви можете це виправити!:)</em></h4>
+            </div>
+        }
+        else *@
+        {
+            <div class="row row-cols-3 row-cols-md-5 g-1">
+                @foreach (var product in Model.Where(p => p.Price > 0))
+                {
+                    <div class="col" style="min-width: 160px">
+                        <div class="card h-100">
+                            <div class="d-flex justify-content-center p-1">
+                                <a href="/Home/Product?id=@product.Id">
+                                   @*  @if (!string.IsNullOrEmpty(product.ProductPhoto))
+                                    {
+                                        <img src="/photoproducts/@product.ProductPhoto" alt="Photo" class="card-img-top" style="max-height: 155px; width: auto; max-width: 100%;" onerror="this.onerror=null; this.src='/photoproducts/no-image.jpg';" />
+                                    }
+                                    else
+                                    {
+                                        <img src="/photoproducts/no-image.jpg" alt="Photo" class="card-img-top" style="max-height: 155px;" />
+                                    } *@
+                                </a>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <a type="button" class="link btn" onclick="addListCompare('@product.Id')">
+
+                                        <img src="~/icons/balance_icon.png" alt="Balance Icon" class="icon-img">
+                                    </a>
+
+                                </div>
+                               @*  <div class="col">
+                                    @if (wishlist != null)
+                                    {
+                                        bool flag = false;
+                                        foreach (var wish in wishlist)
+                                        {
+                                            if (wish.IdProduct == @product.Id)
+                                            {
+                                                flag = true;
+                                                break;
+                                            }
+                                        }
+                                        if (flag)
+                                        {
+                                            <button type="button" class="btn btn-link" onclick="deleteToWish('@product.Id')">
+                                                <i class="bi bi-heart-fill" style="color:gold"></i>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="btn btn-link" onclick="addToWish('@product.Id')">
+                                                <i class="bi bi-heart" style="color:gold"></i>
+                                            </button>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn btn-link" onclick="addToWish('@product.Id')">
+                                            <i class="bi bi-heart" style="color:gold"></i>
+                                        </button>
+                                    }
+                                </div> *@
+                            </div>
+
+                            <div class="card-body">
+                                <a class="a-card" href="/Products/GetProduct?id=@product.Id">
+                                    <p class="card-text">@product.Childcategory @product.BrandId @product.Title</p>
+                                </a>
+                                <h5 class="card-title">@product.Price ₴</h5>
+                            </div>
+                        </div>
+                    </div>
+                }
+                @foreach (var product in Model.Where(p => p.QuantityInStock <= 0))
+                {
+                    <div class="col">
+                        <div class="card h-100" style="opacity: 0.8;">
+                            <div class="d-flex justify-content-center p-1">
+                                <a href="/Home/Product?id=@product.Id">
+                                   @*  @if (!string.IsNullOrEmpty(product.ProductPhoto))
+                                    {
+                                        <img src="/photoproducts/@product.ProductPhoto" alt="Photo" class="card-img-top" style="max-height: 155px;" />
+                                    }
+                                    else
+                                    {
+                                        <span>No photo</span>
+                                    } *@
+                                </a>
+                            </div>
+
+                           @*  @if (wishlist != null)
+                            {
+                                bool flag = false;
+                                foreach (var wish in wishlist)
+                                {
+                                    if (wish.IdProduct == @product.Id)
+                                    {
+                                        flag = true;
+                                        break;
+                                    }
+                                }
+                                if (flag)
+                                {
+                                    <button type="button" class="btn btn-link" onclick="deleteToWish('@product.Id')">
+                                        <i class="bi bi-heart-fill" style="color:gold"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn btn-link" onclick="addToWish('@product.Id')">
+                                        <i class="bi bi-heart" style="color:gold"></i>
+                                    </button>
+                                }
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-link" onclick="addToWish('@product.Id')">
+                                    <i class="bi bi-heart" style="color:gold"></i>
+                                </button>
+                            } *@
+
+                            <div class="card-body">
+                                <a class="a-card" href="/Products/GetProduct?id=@product.Id">
+                                    <p class="card-text">@product.Childcategory @product.BrandId @product.Title</p>
+                                </a>
+                                <h5 class="card-title">Немає в наявності</h5>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+    </div>
+</div>
+

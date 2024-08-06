@@ -1,0 +1,22 @@
+﻿@model Rozetka.Models.ViewModels.Products.ProductViewModel
+@{
+    string? category = Context.Session.GetString("Category");
+    string? childcategory = Context.Session.GetString("ChildCategory");
+}
+@{
+    ViewData["Title"] = "Товар";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href=".."><i class="bi bi-house"></i></a></li>
+        <li class="breadcrumb-item"><a href="/Categories/GetChildCategories?category=@category">@category</a></li>
+        <li class="breadcrumb-item"><a href="/Childcategories/GetProducts?childcategory=@childcategory">@childcategory</a></></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Brand.Title @Model.Product.Title</li>
+    </ol>
+</nav>
+
+<h1 class="display-4">@Model.Brand.Title @Model.Product.Title</h1>
+
+
+

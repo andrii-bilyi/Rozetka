@@ -11,7 +11,7 @@ namespace Rozetka.Data
         public DataContext(DbContextOptions options) : base(options) { }
 
         public DbSet<Category> Categories { get; set; }
-        public DbSet<Childcategory> Subcategories { get; set; }
+        public DbSet<Childcategory> Childcategories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }        

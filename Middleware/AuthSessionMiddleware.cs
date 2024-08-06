@@ -74,11 +74,14 @@ namespace Rozetka.Middleware
                             new Claim(ClaimTypes.Sid, user.Id.ToString()),
                             new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
                             new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
-                            new Claim(ClaimTypes.MobilePhone, user.PhoneNumber ?? string.Empty)
-
+                            new Claim(ClaimTypes.MobilePhone, user.PhoneNumber ?? string.Empty)                            
                         };
 
                         context.User = new ClaimsPrincipal(new ClaimsIdentity(claims, nameof(AuthSessionMiddleware)));
+                        //запитати кошик та покласти у context
+                        context.Items["ShoppingCart"] = user.Cart;
+                        context.Items["WishList"] = user.WishList;
+                        context.Items["Purchase"] = user.ShoppingList;                        
                     }
                 }
             }
