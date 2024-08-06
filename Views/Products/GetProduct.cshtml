@@ -1,4 +1,4 @@
-﻿@model Rozetka.Models.ViewModels.Products.ProductViewModel
+﻿@model Rozetka.Data.Entity.Product
 @{
     string? category = Context.Session.GetString("Category");
     string? childcategory = Context.Session.GetString("ChildCategory");
@@ -12,11 +12,90 @@
         <li class="breadcrumb-item"><a href=".."><i class="bi bi-house"></i></a></li>
         <li class="breadcrumb-item"><a href="/Categories/GetChildCategories?category=@category">@category</a></li>
         <li class="breadcrumb-item"><a href="/Childcategories/GetProducts?childcategory=@childcategory">@childcategory</a></></li>
-        <li class="breadcrumb-item active" aria-current="page">@Model.Brand.Title @Model.Product.Title</li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Brand.Title @Model.Title</li>
     </ol>
 </nav>
 
-<h1 class="display-4">@Model.Brand.Title @Model.Product.Title</h1>
+<h1 class="display-4">@Model.Brand.Title @Model.Title</h1>
 
+<div>
+    <h4>Product</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Title
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Title
+        </dd>
+        <dt class="col-sm-2">
+            Description
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Description
+        </dd>
+        <dt class="col-sm-2">
+            Price
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Price
+        </dd>
+        <dt class="col-sm-2">
+            Brand
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Brand?.Title
+        </dd>
+        <dt class="col-sm-2">
+            Childcategory
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Childcategory?.Name
+        </dd>
+    </dl>
+</div>
 
+<div>
+    <h4>Images</h4>
+    <hr />
+    @if (Model.ProductImages != null && Model.ProductImages.Any())
+    {
+        <div>
+            @foreach (var image in Model.ProductImages)
+            {
+                <img src="data:image;base64,@Convert.ToBase64String(image.ImageData)" alt="Product Image" style="max-width: 200px;" />
+            }
+        </div>
+    }
+    else
+    {
+        <p>No images available</p>
+    }
+</div>
+
+<div>
+    <h4>Reviews</h4>
+    <hr />
+    @if (Model.Reviews != null && Model.Reviews.Any())
+    {
+        <div>
+            @foreach (var review in Model.Reviews)
+            {
+                <div>
+                    <p><strong>Review:</strong> @review.Comment</p>
+                    <p><strong>Rating:</strong> @review.Rating</p>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p>No reviews available</p>
+    }
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
 

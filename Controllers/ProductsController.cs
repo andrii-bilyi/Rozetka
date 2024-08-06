@@ -23,8 +23,10 @@ namespace Rozetka.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            var dataContext = _context.Products.Include(p => p.Childcategory);
-            return View(await dataContext.ToListAsync());
+            var products = await _context.Products.Include(p => p.Brand).Include(p => p.Childcategory).ToListAsync();
+            return View(products);
+            //var dataContext = _context.Products.Include(p => p.Childcategory);
+            //return View(await dataContext.ToListAsync());
         }
 
         // GET: Products/Details/5
@@ -37,6 +39,7 @@ namespace Rozetka.Controllers
 
             var product = await _context.Products
                 .Include(p => p.Childcategory)
+                .Include(p => p.Brand)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (product == null)
             {
@@ -46,29 +49,53 @@ namespace Rozetka.Controllers
             return View(product);
         }
 
-        // GET: Products/Create
-        public IActionResult Create()
+        // GET: Products/Create       
+        public async Task<IActionResult> Create()
         {
-            ViewData["ChildcategoryId"] = new SelectList(_context.Childcategories, "Id", "Id");
-            return View();
+            var brands = await _context.Brands.ToListAsync();
+            var childcategories = await _context.Childcategories.ToListAsync();
+
+            var viewModel = new CreateProductVM
+            {
+                Brands = new SelectList(brands, "Id", "Title"),
+                Childcategories = new SelectList(childcategories, "Id", "Name")
+                //Product = new Product()
+            };
+
+            return View(viewModel);
         }
+        //public IActionResult Create()
+        //{
+        //    ViewData["ChildcategoryId"] = new SelectList(_context.Childcategories, "Id", "Id");
+        //    return View();
+
+        //}
+
 
         // POST: Products/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,Price,BrandId,ChildcategoryId,QuantityInStock")] Product product)
+        public async Task<IActionResult> Create(CreateProductVM viewModel)
         {
+            
             if (ModelState.IsValid)
             {
-                _context.Add(product);
+                _context.Products.Add(viewModel.Product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            ViewData["ChildcategoryId"] = new SelectList(_context.Childcategories, "Id", "Id", product.ChildcategoryId);
-            return View(product);
+            }           
+
+            var brands = await _context.Brands.ToListAsync();
+            var childcategories = await _context.Childcategories.ToListAsync();
+
+            viewModel.Brands = new SelectList(brands, "Id", "Title");
+            viewModel.Childcategories = new SelectList(childcategories, "Id", "Name");
+
+            return View(viewModel);
         }
+        
 
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -83,8 +110,19 @@ namespace Rozetka.Controllers
             {
                 return NotFound();
             }
-            ViewData["ChildcategoryId"] = new SelectList(_context.Childcategories, "Id", "Id", product.ChildcategoryId);
-            return View(product);
+
+            var brands = await _context.Brands.ToListAsync();
+            var childcategories = await _context.Childcategories.ToListAsync();
+            var viewModel = new CreateProductVM
+            {
+                Product = product,
+                Brands = new SelectList(brands, "Id", "Title"),
+                Childcategories = new SelectList(childcategories, "Id", "Name")
+            };
+            //ViewData["ChildcategoryId"] = new SelectList(_context.Childcategories, "Id", "Id", product.ChildcategoryId);
+            return View(viewModel);
+            
+            //return View(product);
         }
 
         // POST: Products/Edit/5
@@ -92,9 +130,9 @@ namespace Rozetka.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Price,BrandId,ChildcategoryId,QuantityInStock")] Product product)
+        public async Task<IActionResult> Edit(int id, CreateProductVM viewModel)
         {
-            if (id != product.Id)
+            if (id != viewModel.Product.Id)
             {
                 return NotFound();
             }
@@ -103,12 +141,12 @@ namespace Rozetka.Controllers
             {
                 try
                 {
-                    _context.Update(product);
+                    _context.Update(viewModel.Product);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductExists(product.Id))
+                    if (!ProductExists(viewModel.Product.Id))
                     {
                         return NotFound();
                     }
@@ -119,9 +157,15 @@ namespace Rozetka.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ChildcategoryId"] = new SelectList(_context.Childcategories, "Id", "Id", product.ChildcategoryId);
-            return View(product);
-        }
+
+            var brands = await _context.Brands.ToListAsync();
+            var childcategories = await _context.Childcategories.ToListAsync();
+
+            viewModel.Brands = new SelectList(brands, "Id", "Title");
+            viewModel.Childcategories = new SelectList(childcategories, "Id", "Name");
+
+            return View(viewModel);
+        }   
 
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -163,43 +207,26 @@ namespace Rozetka.Controllers
         }   
 
         public async Task<IActionResult> GetProduct(int id)
-        {
-            if (id > 0)
+        {           
+            if (id <= 0)
             {
-                // Найти продукт по Id
-                var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
-                if (product == null)
-                {
-                    // Если продукт не найден
-                    return NotFound();
-                }
-                //Получить бренд товара
-                var brend = await _context.Brands.FirstOrDefaultAsync(b => b.Id == product.BrandId);
-
-                // Получить изображения продукта
-                var productImages = await _context.ProductImages
-                                                  .Where(pi => pi.ProductId == id)
-                                                  .ToListAsync();
-
-                // Получить отзывы о продукте
-                var reviews = await _context.Reviews
-                                            .Where(r => r.ProductId == id)
-                                            .ToListAsync();
-
-                // Создать экземпляр ProductViewModel
-                var productViewModel = new ProductViewModel
-                {
-                    Product = product,
-                    Brand = brend,
-                    ProductImages = new LinkedList<ProductImage>(productImages),
-                    Reviews = new LinkedList<Review>(reviews)
-                };
-
-                // Передать ProductViewModel в представление
-                return View(productViewModel);
+                return BadRequest();
             }
 
-            return BadRequest(); // Вернуть плохой запрос, если id невалидный
+            // Найти продукт по Id и загрузить связанные данные
+            var product = await _context.Products
+                                        .Include(p => p.Brand)
+                                        .Include(p => p.Childcategory)
+                                        .Include(p => p.ProductImages)
+                                        .Include(p => p.Reviews)
+                                        .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+            
+            return View(product);
         }
     }
 }

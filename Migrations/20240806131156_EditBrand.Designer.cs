@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Rozetka.Data;
 
@@ -11,9 +12,11 @@ using Rozetka.Data;
 namespace Rozetka.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240806131156_EditBrand")]
+    partial class EditBrand
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -163,8 +166,9 @@ namespace Rozetka.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<byte[]>("ImageData")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -257,7 +261,7 @@ namespace Rozetka.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("BrandId")
+                    b.Property<int>("BrandId")
                         .HasColumnType("int");
 
                     b.Property<int?>("CategoryId")
@@ -276,7 +280,6 @@ namespace Rozetka.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -301,7 +304,7 @@ namespace Rozetka.Migrations
                     b.Property<byte[]>("ImageData")
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<int?>("ProductId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -546,9 +549,11 @@ namespace Rozetka.Migrations
 
             modelBuilder.Entity("Rozetka.Data.Entity.Product", b =>
                 {
-                    b.HasOne("Rozetka.Data.Entity.Brand", "Brand")
+                    b.HasOne("Rozetka.Data.Entity.Brand", null)
                         .WithMany("Products")
-                        .HasForeignKey("BrandId");
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Rozetka.Data.Entity.Category", null)
                         .WithMany("Products")
@@ -558,8 +563,6 @@ namespace Rozetka.Migrations
                         .WithMany("Products")
                         .HasForeignKey("ChildcategoryId");
 
-                    b.Navigation("Brand");
-
                     b.Navigation("Childcategory");
                 });
 
@@ -567,7 +570,9 @@ namespace Rozetka.Migrations
                 {
                     b.HasOne("Rozetka.Data.Entity.Product", "Product")
                         .WithMany("ProductImages")
-                        .HasForeignKey("ProductId");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Product");
                 });

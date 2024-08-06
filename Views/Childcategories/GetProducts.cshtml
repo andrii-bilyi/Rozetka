@@ -110,29 +110,33 @@
 
     </div> *@ 
     <div class="col-sm-9">
-       @*  @if (Model.Products.Count < 1)
+        @if (!Model.Any())
         {
             <div class="container d-flex align-items-center justify-content-center">
                 <h4><em>В зв'язку з тим, що сайт знаходиться в розробці, товари даної категорії ще відсутні! Але, якщо ви маєте права адміністратора, ви можете це виправити!:)</em></h4>
             </div>
         }
-        else *@
+        else
         {
             <div class="row row-cols-3 row-cols-md-5 g-1">
-                @foreach (var product in Model.Where(p => p.Price > 0))
+                @foreach (var product in Model.Where(p => p.QuantityInStock > 0))
                 {
                     <div class="col" style="min-width: 160px">
                         <div class="card h-100">
                             <div class="d-flex justify-content-center p-1">
-                                <a href="/Home/Product?id=@product.Id">
-                                   @*  @if (!string.IsNullOrEmpty(product.ProductPhoto))
+                                <a href="/Products/GetProduct?id=@product.Id">
+                                    @if (product.ProductImages != null)
                                     {
-                                        <img src="/photoproducts/@product.ProductPhoto" alt="Photo" class="card-img-top" style="max-height: 155px; width: auto; max-width: 100%;" onerror="this.onerror=null; this.src='/photoproducts/no-image.jpg';" />
+                                        foreach (var itemImage in product.ProductImages)
+                                        {
+                                            <img src="data:image;base64,@Convert.ToBase64String(itemImage.ImageData)" alt="Product Image" style="max-height: 155px; width: auto; max-width: 100%;" onerror="this.onerror=null; this.src='/photoproducts/no-image.jpg';" />
+                                            break;
+                                        } 
                                     }
                                     else
                                     {
                                         <img src="/photoproducts/no-image.jpg" alt="Photo" class="card-img-top" style="max-height: 155px;" />
-                                    } *@
+                                    }
                                 </a>
                             </div>
                             <div class="row">
@@ -179,7 +183,7 @@
 
                             <div class="card-body">
                                 <a class="a-card" href="/Products/GetProduct?id=@product.Id">
-                                    <p class="card-text">@product.Childcategory @product.BrandId @product.Title</p>
+                                    <p class="card-text">@product.Childcategory.Name @product.Brand.Title @product.Title</p>
                                 </a>
                                 <h5 class="card-title">@product.Price ₴</h5>
                             </div>
@@ -191,15 +195,19 @@
                     <div class="col">
                         <div class="card h-100" style="opacity: 0.8;">
                             <div class="d-flex justify-content-center p-1">
-                                <a href="/Home/Product?id=@product.Id">
-                                   @*  @if (!string.IsNullOrEmpty(product.ProductPhoto))
+                                <a href="/Products/GetProduct?id=@product.Id">
+                                    @if (product.ProductImages != null)
                                     {
-                                        <img src="/photoproducts/@product.ProductPhoto" alt="Photo" class="card-img-top" style="max-height: 155px;" />
+                                        foreach (var itemImage in product.ProductImages)
+                                        {
+                                            <img src="data:image;base64,@Convert.ToBase64String(itemImage.ImageData)" alt="Product Image" style="max-height: 155px; width: auto; max-width: 100%;" onerror="this.onerror=null; this.src='/photoproducts/no-image.jpg';" />
+                                            break;
+                                        }
                                     }
                                     else
                                     {
-                                        <span>No photo</span>
-                                    } *@
+                                        <img src="/photoproducts/no-image.jpg" alt="Photo" class="card-img-top" style="max-height: 155px;" />
+                                    }
                                 </a>
                             </div>
 

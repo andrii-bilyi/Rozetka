@@ -197,10 +197,17 @@ namespace Rozetka.Controllers
                 // Якщо підкатегорія не знайдена
                 return NotFound();
             }
-            // Отримати товари для знайденої підкатегорії 
+            // Отримати товари для знайденої підкатегорії з усіма відповідними даними
             var products = await _context.Products
-                .Where(predicate: sc => sc.Childcategory.Name == childcategory)
+                .Where(p => p.Childcategory.Name == childcategory)
+                .Include(p => p.Brand)
+                .Include(p => p.ProductImages)
+                .Include(p => p.Reviews)
                 .ToListAsync();
+            //// Отримати товари для знайденої підкатегорії 
+            //var products = await _context.Products
+            //    .Where(predicate: sc => sc.Childcategory.Name == childcategory)
+            //    .ToListAsync();
             HttpContext.Session.SetString("ChildCategory", childcategory);
 
             return View(products);

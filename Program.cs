@@ -17,7 +17,7 @@ builder.Services.AddControllersWithViews();
 // Add session services
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromSeconds(30); // время ожидания
+    options.IdleTimeout = TimeSpan.FromSeconds(60); // время ожидания
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
