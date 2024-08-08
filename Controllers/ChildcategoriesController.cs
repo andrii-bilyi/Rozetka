@@ -21,33 +21,38 @@ namespace Rozetka.Controllers
         }
 
         // GET: Childcategories
-        public IActionResult Index(string childcategory)
+        public async Task<IActionResult> Index()
         {
-            //var dataContext = _context.Childcategories.Include(c => c.Category);
-            //return View(await dataContext.ToListAsync());
-            if (string.IsNullOrEmpty(childcategory))
-            {
-                return NotFound();
-            }
-
-            // Знайти Id категорії за назвою
-            var childcategoryEntity = _context.Childcategories.FirstOrDefault(c => c.Name == childcategory);
-            if (childcategoryEntity == null)
-            {
-                // Якщо підкатегорія не знайдена
-                return NotFound();
-            }
-
-            // Отримати товари для знайденої підкатегорії 
-            var products = _context.Products
-                .Where(sc => sc.Childcategory.Name == childcategory)
-                .ToList();
-
-            // Відкрити на новій сторінці
-            //ViewData["ChildCategoryName"] = childcategory;
-            HttpContext.Session.SetString("ChildCategory", childcategory);
-            return View(products);
+            var dataContext = _context.Childcategories.Include(c => c.Category);
+            return View(await dataContext.ToListAsync());
         }
+        //public IActionResult Index(string childcategory)
+        //{
+        //    //var dataContext = _context.Childcategories.Include(c => c.Category);
+        //    //return View(await dataContext.ToListAsync());
+        //    if (string.IsNullOrEmpty(childcategory))
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    // Знайти Id категорії за назвою
+        //    var childcategoryEntity = _context.Childcategories.FirstOrDefault(c => c.Name == childcategory);
+        //    if (childcategoryEntity == null)
+        //    {
+        //        // Якщо підкатегорія не знайдена
+        //        return NotFound();
+        //    }
+
+        //    // Отримати товари для знайденої підкатегорії 
+        //    var products = _context.Products
+        //        .Where(sc => sc.Childcategory.Name == childcategory)
+        //        .ToList();
+
+        //    // Відкрити на новій сторінці
+        //    //ViewData["ChildCategoryName"] = childcategory;
+        //    HttpContext.Session.SetString("ChildCategory", childcategory);
+        //    return View(products);
+        //}
 
         // GET: Childcategories/Details/5
         public async Task<IActionResult> Details(int? id)
