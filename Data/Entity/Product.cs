@@ -1,4 +1,6 @@
-﻿namespace Rozetka.Data.Entity
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Rozetka.Data.Entity
 {
     public class Product
     {
@@ -17,9 +19,15 @@
         public int? ChildcategoryId { get; set; }
         public Childcategory? Childcategory { get; set; }
         public int? ProductColorId { get; set; }
-        public ProductColor? ProductColors { get; set; }
+        public ProductColor? ProductColor { get; set; }
         public int? QuantityInStock { get; set; }
         public ICollection<ProductImage>? ProductImages { get; set; }
-        public ICollection<Review>? Reviews { get; set; }        
+        public ICollection<Review>? Reviews { get; set; }
+        public int SubChildCategoryId { get; set; }
+        public SubChildCategory? SubChildCategory { get; set; }
+
+
+        [NotMapped]
+        public bool IsInFavorites { get; set; } // Булево поле для отслеживания состояния избранного        
     }
 }

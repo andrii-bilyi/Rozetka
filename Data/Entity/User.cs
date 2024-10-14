@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace Rozetka.Data.Entity
 {
@@ -10,8 +12,22 @@ namespace Rozetka.Data.Entity
         public DateTime RegisterDt { get; set; }
         
         public ICollection<Review>? Reviews { get; set; }
-        public ICollection<WishList>? WishList { get; set; }
+        public ICollection<Favorites>? WishList { get; set; }
         public ICollection<Cart>? Cart { get; set; }
         public ICollection<ShoppingList>? ShoppingList { get; set; }
+
+
+        [NotMapped] // Це поле не буде зберігатися в базі даних
+        public string Password { get; set; }
+
+        [NotMapped]
+        [Required(ErrorMessage = "Новий пароль є обов'язковим.")]
+        [StringLength(100, ErrorMessage = "Пароль має містити принаймні {2} символів.", MinimumLength = 6)]
+        public string NewPassword { get; set; }
+
+        [NotMapped]
+        [Required(ErrorMessage = "Будь ласка, підтвердіть новий пароль.")]
+        [Compare("NewPassword", ErrorMessage = "Паролі не співпадають.")]
+        public string ConfirmPassword { get; set; }
     }
 }

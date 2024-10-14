@@ -62,9 +62,30 @@
                         Каталог
                     </button>                                        
                 </div>   
-                <form class="d-flex mx-3 p-2 flex-fill" role="search" asp-controller="Home" asp-action="Searching">
-                    <input class="form-control" type="search" placeholder="Я шукаю..." aria-label="Search" name="inputSearching">
+                <form class="d-flex mx-3 p-2 flex-fill" role="search" asp-controller="Home" asp-action="GetSearchResult">
+                    <input class="form-control" type="search" placeholder="Я шукаю..." aria-label="Search" name="inputSearching" id="searchInput">
+                    <!-- Кнопка голосового поиска -->
+                    <button class="btn btn-secondary" type="button" id="voiceSearchButton">
+                        <i class="bi bi-mic"></i>
+                    </button>
+
+                    <!-- Кнопка отправки поиска -->
                     <button class="btn btn-success" type="submit">Знайти</button>
+
+
+                    @* <!-- Поле пошуку -->
+                    <div class="quick-search-container">
+                        <input class="form-control" type="search" placeholder="Знайти на ШвидкоBuy" aria-label="Search" name="inputSearching">
+                        <div class="vertical-divider"></div>
+                        <div class="svg-container1">
+                            <i class="bi bi-mic fs-5"></i>
+                        </div>
+                        <button class="btn btn-success purple-box-with-text" type="submit">
+                            <div class="svg-container2">
+                                <i class="bi bi-search fs-5 white-icon"></i>
+                            </div>
+                        </button>
+                    </div> *@
                 </form>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
@@ -338,6 +359,36 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- JavaScript для активации голосового поиска -->
+    <script>
+        const voiceSearchButton = document.getElementById('voiceSearchButton');
+        const searchInput = document.getElementById('searchInput');
+        const searchForm = document.getElementById('searchForm');
+
+        if ('webkitSpeechRecognition' in window) {
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = 'uk-UA'; // язык, на котором будет работать голосовой поиск (например, 'uk-UA')
+
+            // Когда голос распознан
+            recognition.onresult = function (event) {
+                const transcript = event.results[0][0].transcript; // Получаем текст, который был распознан
+                searchInput.value = transcript; // Заполняем поле ввода текстом
+                searchForm.submit(); // Отправляем форму автоматически после распознавания
+            };
+
+            // Обработчик клика по кнопке микрофона
+            voiceSearchButton.addEventListener('click', function () {
+                recognition.start(); // Начать распознавание голоса
+            });
+        } else {
+            // Обработчик клика по кнопке микрофона
+            voiceSearchButton.addEventListener('click', function () {
+                alert('Ваш браузер не підтримує голосовий пошук.');
+            });
+            
+        }
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
@@ -369,3 +420,6 @@
         </div>
     </div>
 </div>
+
+
+
